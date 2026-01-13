@@ -318,7 +318,12 @@ function AddCondition({
   );
 }
 
+// Note: OptimizationRule type from generated API doesn't include "xai" yet
+// Using SupportedProvider from @shared which includes "xai"
+// Note: OptimizationRule type from generated API doesn't include "xai" in provider field yet
+// We use SupportedProvider from @shared which includes "xai", and assert when calling API
 type RuleProps = Omit<OptimizationRule, "createdAt" | "updatedAt"> & {
+  provider: SupportedProvider; // Override with SupportedProvider which includes "xai"
   tokenPrices: TokenPrices;
   teams?: Team[];
   editable?: boolean;
@@ -354,12 +359,15 @@ export function Rule({
     enabled: boolean;
   };
 
+  // Type assertion: provider from OptimizationRule may not include "xai" in generated types yet
+  const providerAsSupported = provider as SupportedProvider;
+
   const [formData, setFormData] = useState<FormData>({
     enabled,
     entityType,
     entityId,
     conditions,
-    provider,
+    provider: providerAsSupported,
     targetModel,
   });
 
@@ -371,7 +379,7 @@ export function Rule({
         entityType,
         entityId,
         conditions,
-        provider,
+        provider: providerAsSupported,
         targetModel,
       });
     }
@@ -382,6 +390,7 @@ export function Rule({
     entityId,
     conditions,
     provider,
+    providerAsSupported,
     targetModel,
   ]);
 
@@ -389,12 +398,17 @@ export function Rule({
   const updateFormData = (newData: Partial<FormData>) => {
     const updated = { ...formData, ...newData };
     setFormData(updated);
-    onChange?.(updated);
+    // Type assertion: convert SupportedProvider (includes "xai") to OptimizationRule["provider"] for API
+    // The backend supports "xai" even though generated types don't show it yet
+    onChange?.({
+      ...updated,
+      provider: updated.provider as OptimizationRule["provider"],
+    } as Omit<OptimizationRule, "id" | "createdAt" | "updatedAt">);
   };
 
   const onProviderChange = (provider: SupportedProvider) =>
     updateFormData({
-      provider,
+      provider: provider as OptimizationRule["provider"], // Type assertion: generated types don't include "xai" yet
       targetModel: "",
     });
 

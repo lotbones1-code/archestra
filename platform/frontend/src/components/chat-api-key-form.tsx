@@ -55,17 +55,11 @@ export type ChatApiKeyFormValues = {
 export type ChatApiKeyResponse =
   archestraApiTypes.GetChatApiKeysResponses["200"][number];
 
-const PROVIDER_CONFIG: Record<
-  CreateChatApiKeyBody["provider"],
-  {
-    name: string;
-    icon: string;
-    placeholder: string;
-    enabled: boolean;
-    consoleUrl: string;
-    consoleName: string;
-  }
-> = {
+// Use SupportedProvider from @shared instead of generated type to include "xai"
+// The generated types will be updated when API client is regenerated
+// Note: Generated types don't include "xai" yet - will be fixed when API client is regenerated
+// Using type assertion to include xai for now
+const PROVIDER_CONFIG = {
   anthropic: {
     name: "Anthropic",
     icon: "/icons/anthropic.png",
@@ -114,7 +108,25 @@ const PROVIDER_CONFIG: Record<
     consoleUrl: "https://ollama.ai/",
     consoleName: "Ollama",
   },
-} as const;
+  xai: {
+    name: "x.ai (Grok)",
+    icon: "/icons/xai.png",
+    placeholder: "xai-...",
+    enabled: true,
+    consoleUrl: "https://console.x.ai/",
+    consoleName: "x.ai Console",
+  },
+} as Record<
+  CreateChatApiKeyBody["provider"] | "xai",
+  {
+    name: string;
+    icon: string;
+    placeholder: string;
+    enabled: boolean;
+    consoleUrl: string;
+    consoleName: string;
+  }
+>;
 
 export { PROVIDER_CONFIG };
 
