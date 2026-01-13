@@ -240,6 +240,44 @@ const ollamaConfig: CompressionTestConfig = {
   }),
 };
 
+const xaiConfig: CompressionTestConfig = {
+  providerName: "x.ai",
+
+  endpoint: (profileId) => `/v1/xai/${profileId}/chat/completions`,
+
+  headers: (wiremockStub) => ({
+    Authorization: `Bearer ${wiremockStub}`,
+    "Content-Type": "application/json",
+  }),
+
+  // x.ai uses OpenAI-compatible format: tool results are sent as separate "tool" role messages
+  buildRequestWithToolResult: () => ({
+    model: "grok-4",
+    messages: [
+      { role: "user", content: "What files are in the current directory?" },
+      {
+        role: "assistant",
+        content: null,
+        tool_calls: [
+          {
+            id: "call_123",
+            type: "function",
+            function: {
+              name: "list_files",
+              arguments: '{"directory": "."}',
+            },
+          },
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: "call_123",
+        content: JSON.stringify(TOOL_RESULT_DATA),
+      },
+    ],
+  }),
+};
+
 // =============================================================================
 // Test Suite
 // =============================================================================
@@ -247,6 +285,7 @@ const ollamaConfig: CompressionTestConfig = {
 const testConfigs: CompressionTestConfig[] = [
   openaiConfig,
   anthropicConfig,
+  xaiConfig,
   geminiConfig,
   vllmConfig,
   ollamaConfig,

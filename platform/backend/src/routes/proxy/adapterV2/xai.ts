@@ -1125,8 +1125,7 @@ export const xaiAdapterFactory: LLMProvider<
   },
 
   getBaseUrl(): string | undefined {
-    // x.ai uses https://api.x.ai/v1
-    return "https://api.x.ai/v1";
+    return config.llm.xai.baseUrl;
   },
 
   getSpanName(_streaming: boolean): string {

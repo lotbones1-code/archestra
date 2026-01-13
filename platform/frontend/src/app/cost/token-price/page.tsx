@@ -84,8 +84,13 @@ function TokenPriceInlineForm({
   onCancel: () => void;
   models?: ChatModel[];
 }) {
-  const [formData, setFormData] = useState({
-    provider: initialData?.provider || ("openai" as const),
+  const [formData, setFormData] = useState<{
+    provider: SupportedProvider;
+    model: string;
+    pricePerMillionInput: string;
+    pricePerMillionOutput: string;
+  }>({
+    provider: (initialData?.provider || "openai") as SupportedProvider,
     model: initialData?.model || "",
     pricePerMillionInput: String(initialData?.pricePerMillionInput || ""),
     pricePerMillionOutput: String(initialData?.pricePerMillionOutput || ""),
@@ -112,7 +117,8 @@ function TokenPriceInlineForm({
     (e: React.FormEvent) => {
       e.preventDefault();
       if (isValid) {
-        onSave(formData);
+        // Type assertion: generated types don't include "xai" yet, but backend supports it
+        onSave(formData as archestraApiTypes.CreateTokenPriceData["body"]);
       }
     },
     [formData, onSave, isValid],

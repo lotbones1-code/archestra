@@ -1,5 +1,6 @@
 import {
   archestraApiSdk,
+  archestraApiTypes,
   isBrowserMcpTool,
   type SupportedProvider,
 } from "@shared";
@@ -76,9 +77,13 @@ export function useCreateConversation() {
           agentId,
           promptId,
           selectedModel,
-          selectedProvider,
+          // Type assertion: generated types don't include "xai" yet, but backend supports it
+          selectedProvider: selectedProvider as
+            | archestraApiTypes.CreateChatConversationData["body"]["selectedProvider"]
+            | "xai"
+            | undefined,
           chatApiKeyId: chatApiKeyId ?? undefined,
-        },
+        } as archestraApiTypes.CreateChatConversationData["body"],
       });
       if (error) throw new Error("Failed to create conversation");
       return data;
@@ -117,7 +122,21 @@ export function useUpdateConversation() {
     }) => {
       const { data, error } = await updateChatConversation({
         path: { id },
-        body: { title, selectedModel, selectedProvider, chatApiKeyId, agentId },
+        body: {
+          title,
+          selectedModel,
+          // Type assertion: generated types don't include "xai" yet, but backend supports it
+          selectedProvider: selectedProvider as
+            | (archestraApiTypes.UpdateChatConversationData["body"] extends {
+                selectedProvider?: infer P;
+              }
+                ? P
+                : never)
+            | "xai"
+            | undefined,
+          chatApiKeyId,
+          agentId,
+        } as archestraApiTypes.UpdateChatConversationData["body"],
       });
       if (error) throw new Error("Failed to update conversation");
       return data;

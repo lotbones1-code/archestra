@@ -178,6 +178,30 @@ const ollamaConfig: ToolPersistenceTestConfig = {
   }),
 };
 
+const xaiConfig: ToolPersistenceTestConfig = {
+  providerName: "x.ai",
+
+  endpoint: (agentId) => `/v1/xai/${agentId}/chat/completions`,
+
+  headers: (wiremockStub) => ({
+    Authorization: `Bearer ${wiremockStub}`,
+    "Content-Type": "application/json",
+  }),
+
+  buildRequest: (content, tools) => ({
+    model: "grok-4",
+    messages: [{ role: "user", content }],
+    tools: tools.map((t) => ({
+      type: "function",
+      function: {
+        name: t.name,
+        description: t.description,
+        parameters: t.parameters,
+      },
+    })),
+  }),
+};
+
 // =============================================================================
 // Test Suite
 // =============================================================================
@@ -188,6 +212,7 @@ const testConfigs: ToolPersistenceTestConfig[] = [
   geminiConfig,
   vllmConfig,
   ollamaConfig,
+  xaiConfig,
 ];
 
 for (const config of testConfigs) {

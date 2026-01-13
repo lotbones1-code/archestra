@@ -273,6 +273,11 @@ export default {
       baseUrl: process.env.ARCHESTRA_OLLAMA_BASE_URL,
       useV2Routes: process.env.ARCHESTRA_OLLAMA_USE_V2_ROUTES !== "false",
     },
+    xai: {
+      baseUrl:
+        process.env.ARCHESTRA_XAI_BASE_URL || "https://api.x.ai/v1",
+      useV2Routes: process.env.ARCHESTRA_XAI_USE_V2_ROUTES !== "false",
+    },
   },
   chat: {
     openai: {
@@ -289,6 +294,9 @@ export default {
     },
     ollama: {
       apiKey: process.env.ARCHESTRA_CHAT_OLLAMA_API_KEY || "",
+    },
+    xai: {
+      apiKey: process.env.ARCHESTRA_CHAT_XAI_API_KEY || process.env.XAI_API_KEY || "",
     },
     mcp: {
       remoteServerUrl: process.env.ARCHESTRA_CHAT_MCP_SERVER_URL || "",

@@ -8,6 +8,7 @@ import fastifyHttpProxy from "@fastify/http-proxy";
 import { RouteId } from "@shared";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
+import config from "@/config";
 import logger from "@/logging";
 import { constructResponseSchema, OpenAi, UuidIdSchema } from "@/types";
 import { xaiAdapterFactory } from "../adapterV2";
@@ -18,12 +19,11 @@ import * as utils from "../utils";
 const xaiProxyRoutesV2: FastifyPluginAsyncZod = async (fastify) => {
   const API_PREFIX = `${PROXY_API_PREFIX}/xai`;
   const CHAT_COMPLETIONS_SUFFIX = "/chat/completions";
-  const BASE_URL = "https://api.x.ai/v1";
 
   logger.info("[UnifiedProxy] Registering unified x.ai routes");
 
   await fastify.register(fastifyHttpProxy, {
-    upstream: BASE_URL,
+    upstream: config.llm.xai.baseUrl,
     prefix: API_PREFIX,
     rewritePrefix: "",
     preHandler: (request, _reply, next) => {
@@ -59,8 +59,8 @@ const xaiProxyRoutesV2: FastifyPluginAsyncZod = async (fastify) => {
             method: request.method,
             originalUrl,
             rewrittenUrl: request.raw.url,
-            upstream: BASE_URL,
-            finalProxyUrl: `${BASE_URL}${remainingPath}`,
+            upstream: config.llm.xai.baseUrl,
+            finalProxyUrl: `${config.llm.xai.baseUrl}${remainingPath}`,
           },
           "x.ai proxy preHandler: URL rewritten (UUID stripped)",
         );
@@ -69,8 +69,8 @@ const xaiProxyRoutesV2: FastifyPluginAsyncZod = async (fastify) => {
           {
             method: request.method,
             url: request.url,
-            upstream: BASE_URL,
-            finalProxyUrl: `${BASE_URL}${pathAfterPrefix}`,
+            upstream: config.llm.xai.baseUrl,
+            finalProxyUrl: `${config.llm.xai.baseUrl}${pathAfterPrefix}`,
           },
           "x.ai proxy preHandler: proxying request",
         );

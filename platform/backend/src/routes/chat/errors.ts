@@ -824,6 +824,7 @@ const providerParsers: Record<SupportedProvider, ErrorParser> = {
   gemini: parseGeminiError,
   vllm: parseVllmError,
   ollama: parseOllamaError,
+  xai: parseOpenAIError, // x.ai uses OpenAI-compatible API
 };
 
 /**
@@ -837,6 +838,7 @@ const providerMappers: Record<SupportedProvider, ErrorMapper> = {
   gemini: mapGeminiErrorWrapper,
   vllm: mapVllmErrorWrapper,
   ollama: mapOllamaErrorWrapper,
+  xai: mapOpenAIErrorWrapper, // x.ai uses OpenAI-compatible API
 };
 
 // =============================================================================

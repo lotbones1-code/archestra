@@ -23,6 +23,7 @@ import {
   type OpenAi,
   SupportedChatProviderSchema,
 } from "@/types";
+import { fetchXaiModels } from "./xai";
 
 /** TTL for caching chat models from provider APIs */
 const CHAT_MODELS_CACHE_TTL_MS = TimeInMs.Hour * 2;
@@ -400,6 +401,8 @@ async function getProviderApiKey({
     case "ollama":
       // Ollama typically doesn't require API keys, return empty or configured key
       return config.chat.ollama.apiKey || "";
+    case "xai":
+      return config.chat.xai?.apiKey || null;
     default:
       return null;
   }
@@ -415,6 +418,7 @@ const modelFetchers: Record<
   gemini: fetchGeminiModels,
   vllm: fetchVllmModels,
   ollama: fetchOllamaModels,
+  xai: fetchXaiModels,
 };
 
 /**
@@ -453,6 +457,7 @@ export async function fetchModelsForProvider({
 
   // For Gemini with Vertex AI, we don't need an API key - authentication is via ADC
   // For vLLM and Ollama, API key is optional
+  // x.ai requires an API key
   if (!apiKey && !vertexAiEnabled && !isVllm && !isOllama) {
     logger.debug(
       { provider, organizationId },
@@ -491,6 +496,10 @@ export async function fetchModelsForProvider({
     } else if (provider === "ollama") {
       // Ollama doesn't require API key, pass empty or configured key
       models = await modelFetchers[provider](apiKey || "EMPTY");
+    } else if (provider === "xai") {
+      if (apiKey) {
+        models = await modelFetchers[provider](apiKey);
+      }
     }
     await cacheManager.set(cacheKey, models, CHAT_MODELS_CACHE_TTL_MS);
     return models;
