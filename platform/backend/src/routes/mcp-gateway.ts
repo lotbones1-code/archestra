@@ -75,13 +75,14 @@ async function handleMcpPostRequest(
       }
     } else if (sessionId && !isInitialize) {
       // Non-initialize request with expired/invalid session - return error
+      // This prevents creating orphan sessions and forces proper reinitialization
       fastify.log.warn(
         {
           profileId,
           sessionId,
           method: body?.method,
         },
-        "Request received with expired/invalid session - returning error",
+        "Request received with expired/invalid session - returning 400 error to force reinitialize",
       );
 
       reply.status(400);
@@ -89,7 +90,7 @@ async function handleMcpPostRequest(
         jsonrpc: "2.0",
         error: {
           code: -32000,
-          message: "Bad Request: Session expired or invalid. Please reconnect.",
+          message: "Session expired, please reinitialize",
         },
         id: body?.id ?? null,
       };
