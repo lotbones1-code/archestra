@@ -3,6 +3,7 @@
 
 # Editor directories and files
 .idea
+.cursor/
 .DS_Store
 *.suo
 *.ntvs*

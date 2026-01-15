@@ -73,6 +73,30 @@ async function handleMcpPostRequest(
           "Re-initialize on existing session - will reuse existing server",
         );
       }
+<<<<<<< HEAD
+=======
+    } else if (sessionId && !isInitialize) {
+      // Non-initialize request with expired/invalid session - return error
+      // This prevents creating orphan sessions and forces proper reinitialization
+      fastify.log.warn(
+        {
+          profileId,
+          sessionId,
+          method: body?.method,
+        },
+        "Request received with expired/invalid session - returning 400 error to force reinitialize",
+      );
+
+      reply.status(400);
+      return {
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: "Session expired, please reinitialize",
+        },
+        id: body?.id ?? null,
+      };
+>>>>>>> 66b583f7 (fix: MCP Gateway session handling - database migrations completed)
     } else {
       // Either initialize request OR request with invalid/expired session
       // In both cases, create a new session

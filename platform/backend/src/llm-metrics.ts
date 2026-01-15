@@ -433,9 +433,10 @@ export function getObservableFetch(
           provider === "openai" ||
           provider === "cerebras" ||
           provider === "vllm" ||
-          provider === "ollama"
+          provider === "ollama" ||
+          provider === "xai"
         ) {
-          // Cerebras, vLLM and Ollama use OpenAI-compatible API format
+          // vLLM, Ollama, and x.ai use OpenAI-compatible API format
           const { input, output } = utils.adapters.openai.getUsageTokens(
             data.usage,
           );
