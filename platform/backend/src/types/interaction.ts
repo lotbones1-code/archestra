@@ -9,6 +9,7 @@ import {
   Ollama,
   OpenAi,
   Vllm,
+  Xai,
 } from "./llm-providers";
 
 export const UserInfoSchema = z.object({
@@ -27,6 +28,7 @@ export const InteractionRequestSchema = z.union([
   Cerebras.API.ChatCompletionRequestSchema,
   Vllm.API.ChatCompletionRequestSchema,
   Ollama.API.ChatCompletionRequestSchema,
+  Xai.API.ChatCompletionRequestSchema,
 ]);
 
 export const InteractionResponseSchema = z.union([
@@ -36,6 +38,7 @@ export const InteractionResponseSchema = z.union([
   Cerebras.API.ChatCompletionResponseSchema,
   Vllm.API.ChatCompletionResponseSchema,
   Ollama.API.ChatCompletionResponseSchema,
+  Xai.API.ChatCompletionResponseSchema,
 ]);
 
 /**
@@ -110,6 +113,12 @@ export const SelectInteractionSchema = z.discriminatedUnion("type", [
     processedRequest:
       Ollama.API.ChatCompletionRequestSchema.nullable().optional(),
     response: Ollama.API.ChatCompletionResponseSchema,
+  }),
+  BaseSelectInteractionSchema.extend({
+    type: z.enum(["xai:chatCompletions"]),
+    request: Xai.API.ChatCompletionRequestSchema,
+    processedRequest: Xai.API.ChatCompletionRequestSchema.nullable().optional(),
+    response: Xai.API.ChatCompletionResponseSchema,
   }),
 ]);
 

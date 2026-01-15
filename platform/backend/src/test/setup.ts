@@ -24,6 +24,11 @@ import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
 process.env.ARCHESTRA_SENTRY_BACKEND_DSN = "";
 process.env.ARCHESTRA_SENTRY_ENVIRONMENT = "test";
 
+// Provide a database URL early so config/database modules can load.
+// Tests use PGlite and override the database export, so this value should not be used for real connections.
+process.env.ARCHESTRA_DATABASE_URL ??=
+  "postgresql://user:pass@localhost:5432/archestra_unit_tests";
+
 // Set auth secret for tests
 process.env.ARCHESTRA_AUTH_SECRET = "auth-secret-unit-tests-32-chars!";
 

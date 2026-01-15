@@ -1,7 +1,8 @@
-import type { Anthropic, Gemini, Ollama, OpenAi, Vllm } from "@/types";
+import type { Anthropic, Gemini, Ollama, OpenAi, Vllm, Xai } from "@/types";
 
 export type ProviderMessage =
   | OpenAi.Types.ChatCompletionsRequest["messages"][number]
+  | Xai.Types.ChatCompletionsRequest["messages"][number]
   | Anthropic.Types.MessagesRequest["messages"][number]
   | Gemini.Types.GenerateContentRequest["contents"][number]
   | Vllm.Types.ChatCompletionsRequest["messages"][number]

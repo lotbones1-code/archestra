@@ -648,6 +648,83 @@ Return only the JSON object, no other text.`;
 }
 
 /**
+ * x.ai (Grok) implementation of DualLlmClient
+ * x.ai exposes an OpenAI-compatible API, so we use the OpenAI SDK with x.ai's base URL
+ */
+export class XaiDualLlmClient implements DualLlmClient {
+  private client: OpenAI;
+  private model: string;
+
+  constructor(apiKey: string, model = "grok-4") {
+    logger.debug({ model }, "[dualLlmClient] x.ai: initializing client");
+    this.client = new OpenAI({
+      apiKey,
+      baseURL: config.llm.xai.baseUrl,
+    });
+    this.model = model;
+  }
+
+  async chat(messages: DualLlmMessage[], temperature = 0): Promise<string> {
+    logger.debug(
+      { model: this.model, messageCount: messages.length, temperature },
+      "[dualLlmClient] x.ai: starting chat completion",
+    );
+    const response = await this.client.chat.completions.create({
+      model: this.model,
+      messages,
+      temperature,
+    });
+
+    const content = response.choices[0].message.content?.trim() || "";
+    logger.debug(
+      { model: this.model, responseLength: content.length },
+      "[dualLlmClient] x.ai: chat completion complete",
+    );
+    return content;
+  }
+
+  async chatWithSchema<T>(
+    messages: DualLlmMessage[],
+    schema: {
+      name: string;
+      schema: {
+        type: string;
+        properties: Record<string, unknown>;
+        required: string[];
+        additionalProperties: boolean;
+      };
+    },
+    temperature = 0,
+  ): Promise<T> {
+    logger.debug(
+      {
+        model: this.model,
+        schemaName: schema.name,
+        messageCount: messages.length,
+        temperature,
+      },
+      "[dualLlmClient] x.ai: starting chat with schema",
+    );
+    const response = await this.client.chat.completions.create({
+      model: this.model,
+      messages,
+      response_format: {
+        type: "json_schema",
+        json_schema: schema,
+      },
+      temperature,
+    });
+
+    const content = response.choices[0].message.content || "";
+    logger.debug(
+      { model: this.model, responseLength: content.length },
+      "[dualLlmClient] x.ai: chat with schema complete, parsing response",
+    );
+    return JSON.parse(content) as T;
+  }
+}
+
+/**
  * Factory function to create the appropriate LLM client
  *
  * @param provider - The LLM provider
@@ -695,6 +772,11 @@ export function createDualLlmClient(
         throw new Error("Model name required for Ollama dual LLM");
       }
       return new OllamaDualLlmClient(apiKey, model);
+    case "xai":
+      if (!apiKey) {
+        throw new Error("API key required for x.ai dual LLM");
+      }
+      return new XaiDualLlmClient(apiKey, model);
     default:
       logger.debug(
         { provider },

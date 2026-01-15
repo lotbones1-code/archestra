@@ -19,3 +19,5 @@ export * as gemini from "./gemini";
 export * as openai from "./openai";
 // vLLM is OpenAI-compatible, so it uses the openai adapter
 export * as vllm from "./openai";
+// x.ai is OpenAI-compatible; expose as a dedicated adapter for metrics clarity
+export * as xai from "./xai";
