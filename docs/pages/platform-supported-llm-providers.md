@@ -195,3 +195,37 @@ See the [Vertex AI authentication guide](https://cloud.google.com/vertex-ai/docs
 - **Default Ollama port**: Ollama runs on port `11434` by default. The OpenAI-compatible API is available at `http://localhost:11434/v1`.
 - **No API key required**: Ollama typically doesn't require authentication for local deployments.
 - **Model availability**: Models must be pulled first using `ollama pull <model-name>` before they can be used through Archestra.
+
+## x.ai (Grok)
+
+x.ai (Grok) is an AI provider offering the Grok family of models. Archestra supports x.ai through their OpenAI-compatible API.
+
+### Supported x.ai APIs
+
+- **Chat Completions API** (`/chat/completions`) - ✅ Fully supported (OpenAI-compatible)
+
+### Supported Models
+
+- grok-4
+- grok-4-1-fast-reasoning
+- grok-4-1-fast-non-reasoning
+- grok-code-fast-1
+
+### x.ai Connection Details
+
+- **Base URL**: `http://localhost:9000/v1/xai/{profile-id}`
+- **Authentication**: Pass your x.ai API key in the `Authorization` header as `Bearer <your-api-key>`
+
+### Environment Variables
+
+| Variable                      | Required | Description                                                                    |
+| ----------------------------- | -------- | ------------------------------------------------------------------------------ |
+| `XAI_API_KEY`                 | Yes      | Your x.ai API key                                                              |
+| `ARCHESTRA_XAI_BASE_URL`      | No       | Custom base URL (defaults to `https://api.x.ai/v1`)                           |
+| `ARCHESTRA_CHAT_XAI_API_KEY`  | No       | Alternative environment variable for x.ai API key (falls back to `XAI_API_KEY`) |
+
+### Getting an API Key
+
+1. Go to https://console.x.ai/
+2. Create an account or sign in
+3. Generate an API key from the dashboard
