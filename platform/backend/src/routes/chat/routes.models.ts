@@ -17,7 +17,6 @@ import {
   type OpenAi,
   SupportedChatProviderSchema,
 } from "@/types";
-import { fetchXaiModels } from "./xai";
 
 // Response schema for models
 const ChatModelSchema = z.object({
@@ -316,6 +315,74 @@ async function fetchOllamaModels(apiKey: string): Promise<ModelInfo[]> {
       ? new Date(model.created * 1000).toISOString()
       : undefined,
   }));
+}
+
+/**
+ * Fetch models from x.ai API
+ * x.ai uses an OpenAI-compatible API at https://api.x.ai/v1
+ * See: https://docs.x.ai/api-reference
+ */
+async function fetchXaiModels(apiKey: string): Promise<ModelInfo[]> {
+  const XAI_BASE_URL = "https://api.x.ai/v1";
+  const url = `${XAI_BASE_URL}/models`;
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    logger.error(
+      { status: response.status, error: errorText },
+      "Failed to fetch x.ai models",
+    );
+    throw new Error(`Failed to fetch x.ai models: ${response.status}`);
+  }
+
+  const data = (await response.json()) as {
+    data: Array<{
+      id: string;
+      object: string;
+      created?: number;
+      owned_by?: string;
+    }>;
+  };
+
+  // Filter to only Grok models (grok-*)
+  const excludePatterns = [
+    "instruct",
+    "embedding",
+    "tts",
+    "whisper",
+    "image",
+    "audio",
+  ];
+
+  return data.data
+    .filter((model) => {
+      const id = model.id.toLowerCase();
+
+      // Must be a grok model
+      if (!id.includes("grok")) {
+        return false;
+      }
+
+      // Must not contain excluded patterns
+      const hasExcludedPattern = excludePatterns.some((pattern) =>
+        id.includes(pattern),
+      );
+      return !hasExcludedPattern;
+    })
+    .map((model) => ({
+      id: model.id,
+      displayName: model.id,
+      provider: "xai" as const,
+      createdAt: model.created
+        ? new Date(model.created * 1000).toISOString()
+        : undefined,
+    }));
 }
 
 /**
