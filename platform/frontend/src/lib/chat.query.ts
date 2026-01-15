@@ -1,6 +1,5 @@
 import {
   archestraApiSdk,
-  archestraApiTypes,
   isBrowserMcpTool,
   type SupportedProvider,
 } from "@shared";
