@@ -117,8 +117,7 @@ function TokenPriceInlineForm({
     (e: React.FormEvent) => {
       e.preventDefault();
       if (isValid) {
-        // Type assertion: generated types don't include "xai" yet, but backend supports it
-        onSave(formData as archestraApiTypes.CreateTokenPriceData["body"]);
+        onSave(formData);
       }
     },
     [formData, onSave, isValid],

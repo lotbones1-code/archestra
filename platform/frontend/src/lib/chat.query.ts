@@ -84,13 +84,9 @@ export function useCreateConversation() {
           agentId,
           promptId,
           selectedModel,
-          // Type assertion: generated types don't include "xai" yet, but backend supports it
-          selectedProvider: selectedProvider as
-            | archestraApiTypes.CreateChatConversationData["body"]["selectedProvider"]
-            | "xai"
-            | undefined,
+          selectedProvider,
           chatApiKeyId: chatApiKeyId ?? undefined,
-        } as archestraApiTypes.CreateChatConversationData["body"],
+        },
       });
       if (error) throw new Error("Failed to create conversation");
       return data;
@@ -132,18 +128,10 @@ export function useUpdateConversation() {
         body: {
           title,
           selectedModel,
-          // Type assertion: generated types don't include "xai" yet, but backend supports it
-          selectedProvider: selectedProvider as
-            | (archestraApiTypes.UpdateChatConversationData["body"] extends {
-                selectedProvider?: infer P;
-              }
-                ? P
-                : never)
-            | "xai"
-            | undefined,
+          selectedProvider,
           chatApiKeyId,
           agentId,
-        } as archestraApiTypes.UpdateChatConversationData["body"],
+        },
       });
       if (error) throw new Error("Failed to update conversation");
       return data;

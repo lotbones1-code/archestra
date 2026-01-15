@@ -73,8 +73,6 @@ async function handleMcpPostRequest(
           "Re-initialize on existing session - will reuse existing server",
         );
       }
-<<<<<<< HEAD
-=======
     } else if (sessionId && !isInitialize) {
       // Non-initialize request with expired/invalid session - return error
       // This prevents creating orphan sessions and forces proper reinitialization
@@ -96,7 +94,6 @@ async function handleMcpPostRequest(
         },
         id: body?.id ?? null,
       };
->>>>>>> 66b583f7 (fix: MCP Gateway session handling - database migrations completed)
     } else {
       // Either initialize request OR request with invalid/expired session
       // In both cases, create a new session

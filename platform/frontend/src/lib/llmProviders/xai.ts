@@ -57,10 +57,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
     const toolsRefused = new Set<string>();
     for (const message of this.request.messages) {
       if (message.role === "assistant") {
-        /**
-         * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-         * (ie. there shouldn't be | unknown in the codegen'd type here..)
-         */
         const refusal = message.refusal as string;
         if (refusal && refusal.length > 0) {
           const toolName = refusal.match(
@@ -74,10 +70,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
     }
 
     for (const message of this.response.choices) {
-      /**
-       * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-       * (ie. there shouldn't be | unknown in the codegen'd type here..)
-       */
       const refusal = message.message.refusal as string;
       if (refusal && refusal.length > 0) {
         const toolName = refusal.match(
@@ -125,10 +117,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
   }
 
   getLastAssistantResponse(): string {
-    /**
-     * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-     * (ie. there shouldn't be | unknown in the codegen'd type here..)
-     */
     const content = this.response.choices[0]?.message?.content as string;
     return content ?? "";
   }
@@ -137,10 +125,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
     let count = 0;
     for (const message of this.request.messages) {
       if (message.role === "assistant") {
-        /**
-         * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-         * (ie. there shouldn't be | unknown in the codegen'd type here..)
-         */
         const refusal = message.refusal as string;
         if (refusal && refusal.length > 0) {
           count++;
@@ -148,10 +132,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
       }
     }
     for (const message of this.response.choices) {
-      /**
-       * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-       * (ie. there shouldn't be | unknown in the codegen'd type here..)
-       */
       const refusal = message.message.refusal as string;
       if (refusal && refusal.length > 0) {
         count++;
@@ -170,10 +150,6 @@ class XaiChatCompletionInteraction implements InteractionUtils {
 
     if (role === "assistant") {
       const { tool_calls: toolCalls } = message;
-      /**
-       * TODO: remove this as string assertion once we figure out the openapi/zod weirdness
-       * (ie. there shouldn't be | unknown in the codegen'd type here..)
-       */
       const refusal = message.refusal as string;
 
       if (toolCalls) {

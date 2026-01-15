@@ -197,6 +197,8 @@ export {
   updateTrustedDataPolicy,
   vllmChatCompletionsWithAgent,
   vllmChatCompletionsWithDefaultAgent,
+  xaiChatCompletionsWithAgent,
+  xaiChatCompletionsWithDefaultAgent,
 } from "./sdk.gen";
 export type {
   AddMcpServerInstallationRequestNoteData,
@@ -1172,4 +1174,14 @@ export type {
   VllmChatCompletionsWithDefaultAgentResponses,
   WebSocketMessage,
   WebSocketMessageInput,
+  XaiChatCompletionsWithAgentData,
+  XaiChatCompletionsWithAgentError,
+  XaiChatCompletionsWithAgentErrors,
+  XaiChatCompletionsWithAgentResponse,
+  XaiChatCompletionsWithAgentResponses,
+  XaiChatCompletionsWithDefaultAgentData,
+  XaiChatCompletionsWithDefaultAgentError,
+  XaiChatCompletionsWithDefaultAgentErrors,
+  XaiChatCompletionsWithDefaultAgentResponse,
+  XaiChatCompletionsWithDefaultAgentResponses,
 } from "./types.gen";
