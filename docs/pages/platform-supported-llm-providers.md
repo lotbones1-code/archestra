@@ -213,9 +213,9 @@ x.ai (Grok) is an AI provider offering the Grok family of models. Archestra supp
 
 | Variable                      | Required | Description                                                                    |
 | ----------------------------- | -------- | ------------------------------------------------------------------------------ |
-| `XAI_API_KEY`                 | Yes      | Your x.ai API key                                                              |
+| `ARCHESTRA_XAI_API_KEY`                 | Yes      | Your x.ai API key                                                              |
 | `ARCHESTRA_XAI_BASE_URL`      | No       | Custom base URL (defaults to `https://api.x.ai/v1`)                           |
-| `ARCHESTRA_CHAT_XAI_API_KEY`  | No       | Alternative environment variable for x.ai API key (falls back to `XAI_API_KEY`) |
+| `ARCHESTRA_CHAT_ARCHESTRA_XAI_API_KEY`  | No       | Alternative environment variable for x.ai API key (falls back to `ARCHESTRA_XAI_API_KEY`) |
 
 ### Getting an API Key
 
