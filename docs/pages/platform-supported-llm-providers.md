@@ -204,13 +204,6 @@ x.ai (Grok) is an AI provider offering the Grok family of models. Archestra supp
 
 - **Chat Completions API** (`/chat/completions`) - ✅ Fully supported (OpenAI-compatible)
 
-### Supported Models
-
-- grok-4
-- grok-4-1-fast-reasoning
-- grok-4-1-fast-non-reasoning
-- grok-code-fast-1
-
 ### x.ai Connection Details
 
 - **Base URL**: `http://localhost:9000/v1/xai/{profile-id}`
